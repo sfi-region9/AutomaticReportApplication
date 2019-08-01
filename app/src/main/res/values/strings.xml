@@ -1,0 +1,12 @@
+<resources>
+    <string name="app_name" translatable="false">ARA</string>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="main_page">ARA ( Automatic Report Application ) is the official android client for ARS. You can learn more on the <a href="https://documentation.nwa2coco.fr">Documentation</a> and the <a href="https://reports.nwa2coco.fr">Website</a></string>
+    <string name="documentation"><a href="https://documentation.nwa2coco.fr"></a></string>
+    <string name="website"><a href="https://reports.nwa2coco.fr"></a></string>
+    <string name="report">Report</string>
+    <string name="register">Register</string>
+    <string name="action_settings">Settings</string>
+</resources>
