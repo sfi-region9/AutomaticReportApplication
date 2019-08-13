@@ -1,69 +1,53 @@
 package uss.versailles.ara;
 
-import androidx.room.ColumnInfo;
-import androidx.room.Entity;
-import androidx.room.PrimaryKey;
-
-@Entity(tableName = "users")
 public class User {
 
-    @PrimaryKey(autoGenerate = true)
-    public int id;
-
-    @ColumnInfo(name = "name")
     private String name;
-
-
-    @ColumnInfo(name = "scc")
-    private String scc;
-
-    @ColumnInfo(name = "report")
+    private String username;
     private String report;
-
-    @ColumnInfo(name = "vesselid")
     private String vesselid;
+    private String messengerid;
+    private String scc;
+    private String uuid;
 
-    public String getScc() {
-        return scc;
+
+    public User(String name, String username, String report, String vesselid, String messengerid, String scc, String uuid) {
+        this.name = name;
+        this.username = username;
+        this.report = report;
+        this.vesselid = vesselid;
+        this.messengerid = messengerid;
+        this.scc = scc;
+        this.uuid = uuid;
     }
 
-    public String getVesselid() {
-        return vesselid;
+    public User(String name, String username) {
+        this.name = name;
+        this.username = username;
     }
 
-    public String getReport() {
-        return report;
+    public String getMessengerid() {
+        return messengerid;
     }
 
     public String getName() {
         return name;
     }
 
-    public int getId() {
-        return id;
+    public String getReport() {
+        return report;
     }
 
-    public void setVesselid(String vesselid) {
-        this.vesselid = vesselid;
+    public String getUsername() {
+        return username;
     }
 
-    public void setReport(String report) {
-        this.report = report;
+
+    public String getVesselid() {
+        return vesselid;
     }
 
-    public fr.colin.arssdk.objects.User transform() {
-        return new fr.colin.arssdk.objects.User(name, scc, vesselid, report);
+    public String getScc() {
+        return scc;
     }
-
-    public static User from(fr.colin.arssdk.objects.User user){
-        return new User(user.getName(), user.getScc(), user.getReport(), user.getVesselid());
-    }
-
-    public User(String name, String scc, String report, String vesselid) {
-        this.name = name;
-        this.scc = scc;
-        this.report = report;
-        this.vesselid = vesselid;
-    }
-
 }

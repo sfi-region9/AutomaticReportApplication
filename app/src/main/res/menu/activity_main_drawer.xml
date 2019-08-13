@@ -13,6 +13,10 @@
                 android:icon="@drawable/iconreport"
                 android:title="Report"/>
         <item
+                android:id="@+id/login"
+                android:icon="@drawable/bg"
+                android:title="Log In"/>
+        <item
                 android:id="@+id/register"
                 android:icon="@drawable/settings"
                 android:title="Register"/>

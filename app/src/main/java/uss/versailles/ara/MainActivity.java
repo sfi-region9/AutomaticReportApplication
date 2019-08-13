@@ -1,5 +1,6 @@
 package uss.versailles.ara;
 
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.StrictMode;
 import android.support.design.widget.FloatingActionButton;
@@ -12,6 +13,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -19,24 +21,29 @@ import android.view.WindowManager;
 import androidx.room.Room;
 import fr.colin.arssdk.ARSdk;
 import fr.colin.arssdk.objects.Vessel;
+import uss.versailles.ara.fragments.LoginFragment;
 import uss.versailles.ara.fragments.MainFragment;
 import uss.versailles.ara.fragments.RegisterFragment;
 import uss.versailles.ara.fragments.ReportFragment;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.concurrent.ExecutionException;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
-    public static Database database;
 
     private static Fragment fragmentRegister;
+    private static Fragment loginFragment;
     public static ArrayList<Vessel> allVessels = new ArrayList<>();
     private static Fragment mainFragment;
     public static final ARSdk SDK = new ARSdk("https://ars.nwa2coco.fr");
     private static Fragment reportFragment;
     public static final int FRAG_REG = 0;
+    private static SocketRegisterAndLoginCommunication com;
+    private static UserLocalStore store;
+
 
     public static NavigationView navigationView;
 
@@ -44,13 +51,9 @@ public class MainActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        database = Room.databaseBuilder(getApplicationContext(), Database.class, "ara").fallbackToDestructiveMigration().allowMainThreadQueries().build();
-        StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
-        View dec = getWindow().getDecorView();
-
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
-        StrictMode.setThreadPolicy(policy);
+        store = new UserLocalStore(this);
         setContentView(R.layout.activity_main);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -66,23 +69,15 @@ public class MainActivity extends AppCompatActivity
         drawer.addDrawerListener(toggle);
         toggle.syncState();
 
-
         navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
-
+        //625 ms
         showFirstFragment();
-        User[] sd = database.userDao().allUsers();
-        try {
-            allVessels = SDK.allVessels();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        System.out.println(sd.length);
-        if (sd.length == 0) {
-            Snackbar.make(dec, "Your profile is not registred yet, please set your scc, name, and vessel with the register button", 10000).show();
-        }
+        new FetchVessel().execute();
 
+        //725 ms
 
+        //1023ms
     }
 
 
@@ -131,6 +126,10 @@ public class MainActivity extends AppCompatActivity
         return super.onOptionsItemSelected(item);
     }
 
+    public static UserLocalStore getStore() {
+        return store;
+    }
+
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
@@ -143,6 +142,8 @@ public class MainActivity extends AppCompatActivity
             showRegisterFrag(getSupportFragmentManager());
         } else if (id == R.id.main) {
             showMainFrag(getSupportFragmentManager());
+        } else if (id == R.id.login) {
+            showLoginFrag(getSupportFragmentManager());
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -163,6 +164,11 @@ public class MainActivity extends AppCompatActivity
         startTransactionFragment(mainFragment, manager);
     }
 
+    public static void showLoginFrag(FragmentManager manager) {
+        if (loginFragment == null) loginFragment = LoginFragment.newInstance();
+        startTransactionFragment(loginFragment, manager);
+    }
+
 
     public static void showReportFrag(FragmentManager manager) {
         if (reportFragment == null) reportFragment = ReportFragment.newInstance();
@@ -177,7 +183,20 @@ public class MainActivity extends AppCompatActivity
     }
 
 
-    public static boolean isRegistred() {
-        return database.userDao().allUsers().length >= 1;
+
+    static class FetchVessel extends AsyncTask<Void, Void, ArrayList<Vessel>> {
+
+        @Override
+        protected ArrayList<Vessel> doInBackground(Void... voids) {
+            try {
+                ArrayList<Vessel> v;
+                v = ARSdk.DEFAULT_INSTANCE.allVessels();
+                MainActivity.allVessels = v;
+                return ARSdk.DEFAULT_INSTANCE.allVessels();
+            } catch (IOException e) {
+                return new ArrayList<>();
+            }
+        }
     }
+
 }

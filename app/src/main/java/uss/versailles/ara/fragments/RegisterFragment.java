@@ -1,5 +1,6 @@
 package uss.versailles.ara.fragments;
 
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
@@ -8,14 +9,16 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.*;
-import fr.colin.arssdk.objects.User;
 import fr.colin.arssdk.objects.Vessel;
 import uss.versailles.ara.MainActivity;
 import uss.versailles.ara.R;
+import uss.versailles.ara.SocketRegisterAndLoginCommunication;
+import uss.versailles.ara.User;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.concurrent.ExecutionException;
 
 public class RegisterFragment extends Fragment {
 
@@ -32,7 +35,6 @@ public class RegisterFragment extends Fragment {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
         Spinner spinner = view.findViewById(R.id.spinnervessel);
 
 
@@ -47,17 +49,20 @@ public class RegisterFragment extends Fragment {
         Button send = view.findViewById(R.id.send);
         EditText name = view.findViewById(R.id.name);
         EditText scc = view.findViewById(R.id.scc);
+        EditText username = view.findViewById(R.id.username_register);
+        EditText password = view.findViewById(R.id.password_register);
+        EditText email = view.findViewById(R.id.email_register);
 
 
         HashMap<String, Integer> vessels = new HashMap<>();
-        for (int i = 0; i < vessel.size(); i++) {
+        for (int i = 0; i < MainActivity.allVessels.size(); i++) {
             vessels.put(MainActivity.allVessels.get(i).getVesselid(), i);
         }
 
-        if (MainActivity.isRegistred()) {
+        if (MainActivity.getStore().isLoggedIn()) {
             name.setEnabled(false);
             scc.setEnabled(false);
-            uss.versailles.ara.User u = MainActivity.database.userDao().getUser();
+            uss.versailles.ara.User u = MainActivity.getStore().getLoggedUser();
             name.setText(u.getName());
             scc.setText(u.getScc());
             spinner.setSelection(vessels.get(u.getVesselid()));
@@ -66,6 +71,9 @@ public class RegisterFragment extends Fragment {
         send.setOnClickListener(v -> {
             String names = name.getText().toString();
             String scs = scc.getText().toString();
+            String usernames = username.getText().toString();
+            String passwords = password.getText().toString();
+            String mail = email.getText().toString();
             if (names.length() == 0) {
                 Snackbar.make(view, "Your name is empty", 3000).show();
                 return;
@@ -78,7 +86,25 @@ public class RegisterFragment extends Fragment {
                 Snackbar.make(view, "Your vessel is empty", 3000).show();
                 return;
             }
-            if (!MainActivity.isRegistred()) {
+            if (!MainActivity.getStore().isLoggedIn()) {
+                Vessel ve = null;
+                for (Vessel vsd : MainActivity.allVessels) {
+                    if (vsd.getName().equalsIgnoreCase(spinner.getSelectedItem().toString().replace(" ", "_"))) {
+                        ve = vsd;
+                        break;
+                    }
+                }
+                if (ve == null)
+                    return;
+                try {
+                    String[] s = new RegisterTask().execute(names, usernames, passwords, ve.getVesselid(), mail, scs).get();
+                    Snackbar.make(view, s[1], 3000).show();
+                } catch (InterruptedException | ExecutionException e) {
+                    e.printStackTrace();
+                }
+                //TODO : REGISTER
+            }
+        /*    if (!MainActivity.isRegistred()) {
                 Vessel ve = null;
                 for (Vessel vsd : MainActivity.allVessels) {
                     if (vsd.getName().equalsIgnoreCase(spinner.getSelectedItem().toString().replace(" ", "_"))) {
@@ -135,10 +161,40 @@ public class RegisterFragment extends Fragment {
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
-            }
+            }*/
 
         });
 
 
+    }
+
+    public static class RegisterTask extends AsyncTask<String, String, String[]> {
+
+
+
+        @Override
+        protected String[] doInBackground(String... strings) {
+            if (strings.length < 6) {
+                return new String[]{"false", "Require six arguments"};
+            }
+            try {
+                SocketRegisterAndLoginCommunication com = new SocketRegisterAndLoginCommunication("pma.nwa2coco.fr", 12345);
+
+                String[] c = com.registerUser(strings[0], strings[1], strings[2], strings[3], strings[4], strings[5]);
+
+                if (Boolean.parseBoolean(c[0])) {
+                    MainActivity.SDK.registerUser(new fr.colin.arssdk.objects.User(strings[0], strings[5], strings[4], ""));
+                }
+
+                return c;
+            } catch (IOException e) {
+                return new String[]{"false", "Error, please retry"};
+            }
+        }
+
+        @Override
+        protected void onProgressUpdate(String... values) {
+            super.onProgressUpdate(values);
+        }
     }
 }
