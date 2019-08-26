@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,8 +13,7 @@ import android.widget.*;
 import fr.colin.arssdk.objects.Vessel;
 import uss.versailles.ara.MainActivity;
 import uss.versailles.ara.R;
-import uss.versailles.ara.SocketRegisterAndLoginCommunication;
-import uss.versailles.ara.User;
+import uss.versailles.ara.RegisterLoginCommunication;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -98,7 +98,11 @@ public class RegisterFragment extends Fragment {
                     return;
                 try {
                     String[] s = new RegisterTask().execute(names, usernames, passwords, ve.getVesselid(), mail, scs).get();
+                    Log.e("Test", s[0] + " " + s[1]);
                     Snackbar.make(view, s[1], 3000).show();
+                    MainActivity.navigationView.getMenu().getItem(3).setChecked(false);
+                    MainActivity.navigationView.getMenu().getItem(0).setChecked(true);
+                    MainActivity.showMainFrag(getFragmentManager());
                 } catch (InterruptedException | ExecutionException e) {
                     e.printStackTrace();
                 }
@@ -171,20 +175,19 @@ public class RegisterFragment extends Fragment {
     public static class RegisterTask extends AsyncTask<String, String, String[]> {
 
 
-
         @Override
         protected String[] doInBackground(String... strings) {
             if (strings.length < 6) {
                 return new String[]{"false", "Require six arguments"};
             }
             try {
-                SocketRegisterAndLoginCommunication com = new SocketRegisterAndLoginCommunication("pma.nwa2coco.fr", 12345);
+                RegisterLoginCommunication com = new RegisterLoginCommunication("pma.nwa2coco.fr", 12345);
 
                 String[] c = com.registerUser(strings[0], strings[1], strings[2], strings[3], strings[4], strings[5]);
 
-                if (Boolean.parseBoolean(c[0])) {
-                    MainActivity.SDK.registerUser(new fr.colin.arssdk.objects.User(strings[0], strings[5], strings[4], ""));
-                }
+            /*    if (Boolean.parseBoolean(c[0])) {
+                    MainActivity.SDK.registerUser(new fr.colin.arssdk.objects.User(strings[0], strings[5], strings[4], "", ""));
+                }*/
 
                 return c;
             } catch (IOException e) {

@@ -12,11 +12,10 @@ import android.widget.Button;
 import android.widget.TextView;
 import uss.versailles.ara.MainActivity;
 import uss.versailles.ara.R;
-import uss.versailles.ara.SocketRegisterAndLoginCommunication;
+import uss.versailles.ara.RegisterLoginCommunication;
 import uss.versailles.ara.User;
 
 import java.io.IOException;
-import java.net.Socket;
 import java.util.concurrent.ExecutionException;
 import java.util.regex.Pattern;
 
@@ -53,7 +52,6 @@ public class LoginFragment extends Fragment {
             try {
                 String[] reports = new LoginTask().execute(usnam.getText().toString(), password.getText().toString()).get();
                 boolean b = Boolean.parseBoolean(reports[0]);
-                System.out.println(reports.length);
                 String message = reports[1];
 
                 if (b) {
@@ -69,7 +67,8 @@ public class LoginFragment extends Fragment {
                     String vessel = m[2];
                     String name = m[3];
                     String messengerid = m[4];
-                    User user = new User(name, username, " ", vessel, messengerid, scc);
+                    String uuid = m[5];
+                    User user = new User(name, username, " ", vessel, messengerid, scc, uuid);
                     MainActivity.getStore().setUserLoggedIn(true);
                     MainActivity.getStore().storeUserData(user);
                     Snackbar.make(view, "You are successfully login " + name + " ! ", 3000).show();
@@ -108,7 +107,7 @@ public class LoginFragment extends Fragment {
             }
             try {
 
-                SocketRegisterAndLoginCommunication com = new SocketRegisterAndLoginCommunication("pma.nwa2coco.fr", 12345);
+                RegisterLoginCommunication com = new RegisterLoginCommunication("pma.nwa2coco.fr", 12345);
                 return com.loginUser(strings[0], strings[1]);
             } catch (IOException e) {
                 return new String[]{"false", "Error, please retry"};

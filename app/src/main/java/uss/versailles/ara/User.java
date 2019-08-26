@@ -34,6 +34,10 @@ public class User {
         return name;
     }
 
+    public String getUuid() {
+        return uuid;
+    }
+
     public String getReport() {
         return report;
     }

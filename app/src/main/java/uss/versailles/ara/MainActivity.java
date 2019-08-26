@@ -2,7 +2,6 @@ package uss.versailles.ara;
 
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.StrictMode;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
@@ -13,12 +12,9 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 import android.view.WindowManager;
-import androidx.room.Room;
 import fr.colin.arssdk.ARSdk;
 import fr.colin.arssdk.objects.Vessel;
 import uss.versailles.ara.fragments.LoginFragment;
@@ -28,7 +24,6 @@ import uss.versailles.ara.fragments.ReportFragment;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.concurrent.ExecutionException;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -41,7 +36,7 @@ public class MainActivity extends AppCompatActivity
     public static final ARSdk SDK = new ARSdk("https://ars.nwa2coco.fr");
     private static Fragment reportFragment;
     public static final int FRAG_REG = 0;
-    private static SocketRegisterAndLoginCommunication com;
+    private static RegisterLoginCommunication com;
     private static UserLocalStore store;
 
 

@@ -20,11 +20,21 @@ public class UserLocalStore {
         spEdit.putString("vessel", user.getVesselid());
         spEdit.putString("messengerid", user.getVesselid());
         spEdit.putString("report", user.getReport());
+        spEdit.putString("uuid", user.getUuid());
         spEdit.apply();
     }
 
+    public void updateReport(String report) {
+        if (!isLoggedIn())
+            return;
+        SharedPreferences.Editor e = userLocalDB.edit();
+        e.remove("report");
+        e.putString("report", report);
+        e.apply();
+    }
+
     public User getLoggedUser() {
-        return new User(userLocalDB.getString("name", ""), userLocalDB.getString("username", ""), userLocalDB.getString("report", ""), userLocalDB.getString("vessel", ""), userLocalDB.getString("messengerid", ""), userLocalDB.getString("scc", ""));
+        return new User(userLocalDB.getString("name", ""), userLocalDB.getString("username", ""), userLocalDB.getString("report", ""), userLocalDB.getString("vessel", ""), userLocalDB.getString("messengerid", ""), userLocalDB.getString("scc", ""), userLocalDB.getString("uuid", ""));
     }
 
     public void setUserLoggedIn(boolean loggedIn) {
