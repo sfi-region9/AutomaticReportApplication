@@ -62,9 +62,15 @@ public class RegisterFragment extends Fragment {
         if (MainActivity.getStore().isLoggedIn()) {
             name.setEnabled(false);
             scc.setEnabled(false);
+            username.setEnabled(false);
+            email.setEnabled(false);
+            password.setEnabled(false);
             uss.versailles.ara.User u = MainActivity.getStore().getLoggedUser();
             name.setText(u.getName());
             scc.setText(u.getScc());
+            username.setText(u.getUsername());
+            email.setText("");
+            password.setText("");
             spinner.setSelection(vessels.get(u.getVesselid()));
         }
 

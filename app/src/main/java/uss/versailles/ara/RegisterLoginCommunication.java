@@ -18,12 +18,10 @@ public class RegisterLoginCommunication {
 
     private String link;
     private int port;
-    private Socket client;
 
     public RegisterLoginCommunication(String link, int port) throws IOException {
         this.link = link;
         this.port = port;
-        this.client = new Socket(link, port);
     }
 
     public String[] registerUser(String name, String username, String password, String vaisseau, String email, String scc) throws IOException {
@@ -58,9 +56,6 @@ public class RegisterLoginCommunication {
         return port;
     }
 
-    public Socket getClient() {
-        return client;
-    }
 
     public String getLink() {
         return link;

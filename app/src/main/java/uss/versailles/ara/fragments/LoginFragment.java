@@ -110,7 +110,9 @@ public class LoginFragment extends Fragment {
                 RegisterLoginCommunication com = new RegisterLoginCommunication("pma.nwa2coco.fr", 12345);
                 return com.loginUser(strings[0], strings[1]);
             } catch (IOException e) {
+                e.printStackTrace();
                 return new String[]{"false", "Error, please retry"};
+
             }
         }
 

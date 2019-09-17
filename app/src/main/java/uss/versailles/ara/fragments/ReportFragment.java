@@ -57,6 +57,7 @@ public class ReportFragment extends Fragment {
         Button editmode = view.findViewById(R.id.editmode);
 
         editmode.setOnClickListener(v -> {
+            System.out.println(u.getReport());
             if (!editMode) {
                 ReportFragment.editMode = true;
                 textArea.setText(u.getReport());
