@@ -10,9 +10,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
+import fr.colin.arssdk.ARSdk;
 import uss.versailles.ara.MainActivity;
 import uss.versailles.ara.R;
-import uss.versailles.ara.RegisterLoginCommunication;
 import uss.versailles.ara.User;
 
 import java.io.IOException;
@@ -107,8 +107,7 @@ public class LoginFragment extends Fragment {
             }
             try {
 
-                RegisterLoginCommunication com = new RegisterLoginCommunication("pma.nwa2coco.fr", 12345);
-                return com.loginUser(strings[0], strings[1]);
+                return ARSdk.DEFAULT_INSTANCE.loginUser(strings[0], strings[1]);
             } catch (IOException e) {
                 e.printStackTrace();
                 return new String[]{"false", "Error, please retry"};

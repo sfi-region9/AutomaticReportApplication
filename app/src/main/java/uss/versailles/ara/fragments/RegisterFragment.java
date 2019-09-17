@@ -9,11 +9,14 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.*;
+import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.Spinner;
+import fr.colin.arssdk.ARSdk;
 import fr.colin.arssdk.objects.Vessel;
 import uss.versailles.ara.MainActivity;
 import uss.versailles.ara.R;
-import uss.versailles.ara.RegisterLoginCommunication;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -187,9 +190,7 @@ public class RegisterFragment extends Fragment {
                 return new String[]{"false", "Require six arguments"};
             }
             try {
-                RegisterLoginCommunication com = new RegisterLoginCommunication("pma.nwa2coco.fr", 12345);
-
-                String[] c = com.registerUser(strings[0], strings[1], strings[2], strings[3], strings[4], strings[5]);
+                String[] c = ARSdk.DEFAULT_INSTANCE.registerUser(strings[0], strings[1], strings[2], strings[3], strings[4], strings[5]);
 
             /*    if (Boolean.parseBoolean(c[0])) {
                     MainActivity.SDK.registerUser(new fr.colin.arssdk.objects.User(strings[0], strings[5], strings[4], "", ""));

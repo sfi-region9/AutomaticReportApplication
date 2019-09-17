@@ -33,10 +33,8 @@ public class MainActivity extends AppCompatActivity
     private static Fragment loginFragment;
     public static ArrayList<Vessel> allVessels = new ArrayList<>();
     private static Fragment mainFragment;
-    public static final ARSdk SDK = new ARSdk("https://ars.nwa2coco.fr");
     private static Fragment reportFragment;
     public static final int FRAG_REG = 0;
-    private static RegisterLoginCommunication com;
     private static UserLocalStore store;
 
 

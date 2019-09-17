@@ -11,6 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import fr.colin.arssdk.ARSdk;
 import uss.versailles.ara.MainActivity;
 import uss.versailles.ara.R;
 import uss.versailles.ara.User;
@@ -180,7 +181,7 @@ public class ReportFragment extends Fragment {
             User u = MainActivity.getStore().getLoggedUser();
             fr.colin.arssdk.objects.User arUser = new fr.colin.arssdk.objects.User(u.getName(), u.getScc(), u.getVesselid(), u.getReport(), u.getUuid());
             try {
-                String syncReport = MainActivity.SDK.syncronize(arUser);
+                String syncReport = ARSdk.DEFAULT_INSTANCE.syncronize(arUser);
                 syncReport = syncReport.replace("\\n", "\n");
                 System.out.println(syncReport);
                 MainActivity.getStore().updateReport(syncReport);
@@ -201,7 +202,7 @@ public class ReportFragment extends Fragment {
             User u = MainActivity.getStore().getLoggedUser();
             fr.colin.arssdk.objects.User arUser = new fr.colin.arssdk.objects.User(u.getName(), u.getScc(), u.getVesselid(), report, u.getUuid());
             try {
-                MainActivity.SDK.postUserReport(arUser);
+                ARSdk.DEFAULT_INSTANCE.postUserReport(arUser);
             } catch (IOException e) {
                 e.printStackTrace();
             }
