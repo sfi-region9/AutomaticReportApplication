@@ -52,34 +52,33 @@ public class ReportFragment extends Fragment {
         new QuerySyncReportTask().execute();
         User u = MainActivity.getStore().getLoggedUser();
         fr.colin.arssdk.objects.User arUser = new fr.colin.arssdk.objects.User(u.getName(), u.getScc(), u.getVesselid(), u.getReport(), u.getUuid());
-     //   System.out.println(u.getReport());
         EditText textArea = view.findViewById(R.id.tarea);
         Button send = view.findViewById(R.id.sendreport);
         Button editmode = view.findViewById(R.id.editmode);
 
         editmode.setOnClickListener(v -> {
-            System.out.println(u.getReport());
+            User us = MainActivity.getStore().getLoggedUser();
             if (!editMode) {
                 ReportFragment.editMode = true;
-                textArea.setText(u.getReport());
+                textArea.setText(us.getReport());
             } else {
                 ReportFragment.editMode = false;
                 textArea.setText("");
             }
         });
         send.setOnClickListener(v -> {
+            User us = MainActivity.getStore().getLoggedUser();
             send.setEnabled(false);
             //TODO : SEND REPORT
             String report = "";
             System.out.println(editMode);
             if (!editMode) {
-                report = u.getReport() + "\n" + textArea.getText().toString();
+                report = us.getReport() + "\n" + textArea.getText().toString();
             } else {
                 report = textArea.getText().toString();
             }
             MainActivity.getStore().updateReport(report);
             arUser.setReport(report);
-            // MainActivity.SDK.postUserReport(sd);
             new SendReport().execute(report);
             Snackbar.make(view, "Your report was sended to the server", 2000).show();
             textArea.setText("");
@@ -89,84 +88,6 @@ public class ReportFragment extends Fragment {
             MainActivity.navigationView.getMenu().getItem(0).setChecked(true);
             MainActivity.showMainFrag(getFragmentManager());
         });
-
-       /* if (!MainActivity.getStore().isLoggedIn()) {
-            Snackbar.make(view, "You are not logged, please go to register section", 3000);
-            MainActivity.navigationView.getMenu().getItem(1).setChecked(false);
-            MainActivity.navigationView.getMenu().getItem(0).setChecked(true);
-            MainActivity.showMainFrag(getFragmentManager());
-            return;
-        }
-
-        User u = MainActivity.getStore().getLoggedUser();
-        Log.e("User Report", u.getReport());
-        fr.colin.arssdk.objects.User arUser = new fr.colin.arssdk.objects.User(u.getName(), u.getScc(), u.getVesselid(), u.getReport());
-        String storedReport = "";
-        try {
-            storedReport = new QuerySyncReportTask().execute(u).get();
-        } catch (InterruptedException | ExecutionException e) {
-            return;
-        }
-        Log.e("Stored Report", storedReport);
-        Log.e("User Report", u.getReport());
-
-
-        /*
-        User user = MainActivity.database.userDao().getUser();
-        fr.colin.arssdk.objects.User arUser = user.transform();
-        EditText textArea = view.findViewById(R.id.tarea);
-        Button send = view.findViewById(R.id.sendreport);
-        Button editmode = view.findViewById(R.id.editmode);
-        try {
-            storedReport = MainActivity.SDK.syncronize(arUser).replace("\\n", "\n");
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        if (storedReport.equalsIgnoreCase(""))
-            return;
-        if (editMode) {
-            textArea.setText(storedReport);
-        }
-
-
-        editmode.setOnClickListener(v -> {
-            if (!editMode) {
-                ReportFragment.editMode = true;
-                textArea.setText(storedReport);
-            } else {
-                ReportFragment.editMode = false;
-                textArea.setText("");
-            }
-        });
-
-        send.setOnClickListener(v -> {
-            send.setEnabled(false);
-            //TODO : SEND REPORT
-            String report = "";
-            System.out.println(editMode);
-            if (!editMode) {
-                report = storedReport + "\n" + textArea.getText().toString();
-            } else {
-                report = textArea.getText().toString();
-            }
-            fr.colin.arssdk.objects.User sd = MainActivity.database.userDao().getUser().transform();
-            sd.setReport(report);
-            try {
-                MainActivity.SDK.postUserReport(sd);
-                Snackbar.make(view, "Your report was sended to the server", 2000).show();
-                textArea.setText("");
-                ReportFragment.editMode = false;
-                send.setEnabled(true);
-                ReportFragment.storedReport = "";
-                MainActivity.navigationView.getMenu().getItem(1).setChecked(false);
-                MainActivity.navigationView.getMenu().getItem(0).setChecked(true);
-                MainActivity.showMainFrag(getFragmentManager());
-            } catch (IOException e) {
-                Snackbar.make(view, "Error please retry", 2000).show();
-            }
-        });
-*/
-
     }
 
     @Override

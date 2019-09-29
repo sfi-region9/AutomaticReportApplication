@@ -56,13 +56,6 @@ public class MainFragment extends Fragment {
             button.setText("");
             button.setEnabled(false);
         });
-
-      /*  if(MainActivity.isRegistred()){
-            TextView vs = view.findViewById(R.id.viewweb);
-            User u = MainActivity.database.userDao().getUser();
-            vs.setText("Hello : " + u.getName() + ". How are you ?\nYour SCC is : " + u.getScc() + "\nYou can modify your vessel in the register page. " + u.getVesselid());
-        }*/
-
     }
 
     @Override

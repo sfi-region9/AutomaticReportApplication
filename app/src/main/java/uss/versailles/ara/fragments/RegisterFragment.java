@@ -117,65 +117,6 @@ public class RegisterFragment extends Fragment {
                 }
                 //TODO : REGISTER
             }
-        /*    if (!MainActivity.isRegistred()) {
-                Vessel ve = null;
-                for (Vessel vsd : MainActivity.allVessels) {
-                    if (vsd.getName().equalsIgnoreCase(spinner.getSelectedItem().toString().replace(" ", "_"))) {
-                        ve = vsd;
-                        break;
-                    }
-                }
-                if (ve == null)
-                    return;
-
-                User u = new User(names, scs, ve.getVesselid(), ve.getDefaul());
-                try {
-                    MainActivity.SDK.registerUser(u);
-                    uss.versailles.ara.User us = new uss.versailles.ara.User(names, scs, ve.getDefaul(), ve.getVesselid());
-                    MainActivity.database.userDao().insertAll(us);
-                    Snackbar.make(view, "You are now logged, Welcome " + names, 3000).show();
-                    name.setEnabled(false);
-                    scc.setEnabled(false);
-                    MainActivity.navigationView.getMenu().getItem(2).setChecked(false);
-                    MainActivity.navigationView.getMenu().getItem(0).setChecked(true);
-                    MainActivity.showMainFrag(getFragmentManager());
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            } else {
-                Vessel ve = null;
-                for (Vessel vsd : MainActivity.allVessels) {
-                    if (vsd.getName().equalsIgnoreCase(spinner.getSelectedItem().toString().replace(" ", "_"))) {
-                        ve = vsd;
-                        break;
-                    }
-                }
-                if (ve == null)
-                    return;
-                User u = MainActivity.database.userDao().getUser().transform();
-                uss.versailles.ara.User s = uss.versailles.ara.User.from(u);
-
-
-                s.setVesselid(ve.getVesselid());
-
-
-                try {
-                    MainActivity.database.userDao().update(ve.getVesselid(), s.getScc());
-
-
-                    MainActivity.SDK.switchVessel(u, ve.getVesselid());
-
-
-                    Snackbar.make(view, "You switched to the " + ve.getName(), 3000).show();
-                    MainActivity.navigationView.getMenu().getItem(2).setChecked(false);
-                    MainActivity.navigationView.getMenu().getItem(0).setChecked(true);
-                    MainActivity.showMainFrag(getFragmentManager());
-
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }*/
-
         });
 
 
@@ -191,11 +132,6 @@ public class RegisterFragment extends Fragment {
             }
             try {
                 String[] c = ARSdk.DEFAULT_INSTANCE.registerUser(strings[0], strings[1], strings[2], strings[3], strings[4], strings[5]);
-
-            /*    if (Boolean.parseBoolean(c[0])) {
-                    MainActivity.SDK.registerUser(new fr.colin.arssdk.objects.User(strings[0], strings[5], strings[4], "", ""));
-                }*/
-
                 return c;
             } catch (IOException e) {
                 return new String[]{"false", "Error, please retry"};
